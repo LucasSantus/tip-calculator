@@ -1,4 +1,4 @@
-<h1 align="center">Tip Calculator(Calculadora de Gorgetas)</h1>
+<h1 align="center">Calculadora de Gorgetas</h1>
 
 <p align="center">
  <a href="#sobre">Sobre</a> &nbsp;|&nbsp;
@@ -55,7 +55,6 @@ cd tip-calculator
 
 ```
 npm install
-
 ```
 
 **Rodando o Projeto**
