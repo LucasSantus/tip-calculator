@@ -10,6 +10,7 @@ const Page = styled.SafeAreaView`
 
 const HeaderText = styled.Text`
     font-size: 25px;
+    margin: 10px;
 `
 
 const Input = styled.TextInput`
@@ -22,11 +23,8 @@ const Input = styled.TextInput`
     padding: 10px;
 `
 
-const CalcButton = styled.TouchableOpacity`
-    margin-top: 20px;
-    background-color: #168ACC;
-    padding: 10px;
-    border-radius: 10px;
+const Row = styled.View`
+    flex-direction: row;
 `
 
 const ResultArea = styled.View`
@@ -38,10 +36,6 @@ const ResultArea = styled.View`
     align-items: center;
 `
 
-const ResultItemTitle = styled.Text`
-    font-size: 18px;
-    font-weight: bold;
-`
 
 const ResultItem = styled.Text`
     font-size: 15px;
@@ -51,6 +45,14 @@ const ResultItem = styled.Text`
 const PctArea = styled.View`
     flex-direction: row;
     margin: 20px;
+`
+
+const Button = styled.TouchableOpacity`
+    margin-top: 20px;
+    background-color: #168ACC;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 3px;
 `
 
 const PctItem = styled.TouchableOpacity`
@@ -70,14 +72,15 @@ const TextB = styled.Text`
 `
 
 export default () => {
-    const [value, setValue] = useState('');
+    const [result, setResult] = useState('');
     const [tip, setTip] = useState(0);
     const [pct, setPct] = useState(10);
     const [active, setActive] = useState(false);
+    const [is_input, setIsInput] = useState(true);
 
     const calc = () => {
-        if (value) {
-            setTip(value * (pct / 100));
+        if (result) {
+            setTip(result * (pct / 100));
         }
     }
 
@@ -87,65 +90,69 @@ export default () => {
 
     return (
         <Page>
-            <HeaderText>Calculadora de Gorjeta</HeaderText>
-            <Input
-                placeholder="Quanto deu a conta?"
-                placeholderTextColor="#000"
-                keyboardType="numeric"
-                value={value}
-                onChangeText={(e) => { setValue(e) }}
-            />
+            <HeaderText>Tip Calculator</HeaderText>
 
-            <TextB>Deseja gorgeta?</TextB>
-
-            <PctItem onPress={() => { setActive(true) }}>
-                <TextW>Sim</TextW>
-            </PctItem>
-
-            <PctItem onPress={() => { setActive(false) }} >
-                <TextW>Não</TextW>
-            </PctItem>
-
-            {active && tip > 0 &&
+            {is_input &&
                 <View>
+                    <Input
+                        placeholder = "Insira o valor total da conta: "
+                        placeholderTextColor = "#000"
+                        keyboardType = "numeric"
+                        value = {result}
+                        onChangeText = {
+                            (e) => { setResult(e) }
+                        }
+                    />
+
+                    <TextB>Deseja entregar gorgeta ao garçon?</TextB>
+
+                    <Row>
+                        <Button onPress={() => { 
+                            setActive(true)
+                            setIsInput(false)
+                        }}>
+                            <TextW>Sim</TextW>
+                        </Button>
+
+                        <Button onPress={() => { 
+                            setActive(false) 
+                            setIsInput(true)
+                        }} >
+                            <TextW>Não</TextW>
+                        </Button>
+                    </Row>
+                </View>
+            }
+
+            {active &&
+                <View>
+                    <Button onPress={() => { 
+                            setActive(false) 
+                            setIsInput(true)
+                        }} >
+                            <TextW>Retornar</TextW>
+                        </Button>
+
                     <PctArea>
-                <PctItem onPress={() => { setPct(5) }}>
-                    <TextW>5%</TextW>
-                </PctItem>
-                <PctItem onPress={() => { setPct(10) }} >
-                    <TextW>10%</TextW>
-                </PctItem>
-                <PctItem onPress={() => { setPct(15) }} >
-                    <TextW>15%</TextW>
-                </PctItem>
-                <PctItem onPress={() => { setPct(20) }}>
-                    <TextW>20%</TextW>
-                </PctItem>
-            </PctArea>
+                        <PctItem onPress={() => { setPct(5) }}>
+                            <TextW>05%</TextW>
+                        </PctItem>
+                        <PctItem onPress={() => { setPct(10) }} >
+                            <TextW>10%</TextW>
+                        </PctItem>
+                        <PctItem onPress={() => { setPct(15) }} >
+                            <TextW>15%</TextW>
+                        </PctItem>
+                    </PctArea>
 
-            <CalcButton onPress={calc} >
-                <TextW>{`Calcular ${pct}%`}</TextW>
-            </CalcButton>
-
-                {tip > 0 &&
-
-                    <ResultArea>
-                    <ResultItemTitle>
-                        Valor da conta
-                    </ResultItemTitle>
-                    <ResultItem>R$ {parseFloat(value).toFixed(2)}</ResultItem>
-
-                    <ResultItemTitle>
-                        Valor da Gorjeta
-                    </ResultItemTitle>
-                    <ResultItem>R$ {tip.toFixed(2)} ({`${pct}%`})</ResultItem>
-
-                    <ResultItemTitle>
-                        Valor Total
-                    </ResultItemTitle>
-                    <ResultItem>R$ {(parseFloat(tip) + parseFloat(value)).toFixed(2)}</ResultItem>
-
-                    </ResultArea>
+                    {
+                        tip > 0 &&
+                        <ResultArea>
+                            <ResultItem>Valor da conta: R$ {parseFloat(result).toFixed(2)}</ResultItem>
+                            <ResultItem>Porcentagem da gorgeta: {`${pct}%`}</ResultItem>
+                            <ResultItem>Valor da gorjeta: R$ {tip.toFixed(2)} ({`${pct}%`})</ResultItem> 
+                            <ResultItem>Valor total: R$ {(parseFloat(tip) + parseFloat(result)).toFixed(2)}</ResultItem>
+                        </ResultArea>
                     }
                 </View>
             }
